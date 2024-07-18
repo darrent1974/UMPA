@@ -183,7 +183,7 @@ def save(out_queue, num_procs, save_path, save_filename, lock):
         else:
             proj_num, res = msg
             np.savez(os.path.join(save_path, save_filename % proj_num), **res)
-            lock.acquire()when
+            lock.acquire()
             try:
                 print("Saved proj# %03d" % proj_num)
             finally:
