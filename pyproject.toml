@@ -1,0 +1,31 @@
+[build-system]
+build-backend = 'mesonpy'
+requires = [
+  "cython",
+  "meson-python",
+  "numpy",
+]
+
+[project]
+name = "UMPA"
+version = "0.3.0"
+requires-python = ">= 3.12"
+dependencies = [
+  "numpy>=2.2.2",
+  "cython>=3.0.0",
+  "scipy>=1.15.1",
+  "matplotlib",
+  "joblib",
+]
+authors = [
+  {name = "Pierre Thibault", email = "pthibault@units.it"},
+  {name = "Fabio De Marco"},
+  {name = "Sara Savatovic"},
+  {name = "Ronan Smith"},  
+]
+maintainers = [
+  {name = "Darren Thompson", email = "thompsod@ansto.gov.au"},
+]
+description = "Unified Modulated Pattern Analysis"
+readme = "README.md"
+license = "GPL-3.0"
