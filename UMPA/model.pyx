@@ -19,11 +19,12 @@ from libcpp.vector cimport vector
 from libc.string cimport memcpy
 from libc.math cimport round
 
-from Model cimport ModelNoDF, ModelBase, ModelDF, ModelDFKernel, CostArgsDFKernel
-from Optim cimport error_status, minimizer_debug, spmin, spmin_quad
-from CUtils cimport gaussian_kernel, convolve
+from UMPA.Model cimport ModelNoDF, ModelBase, ModelDF, ModelDFKernel, CostArgsDFKernel
+from UMPA.Optim cimport error_status, minimizer_debug, spmin, spmin_quad
+from UMPA.CUtils cimport gaussian_kernel, convolve
 
-DEF DEBUG = True
+# Debug flag
+cdef int DEBUG = 1
 
 NPSINGLE = np.dtype('float32')
 NPDOUBLE = np.dtype('float64')
@@ -369,6 +370,11 @@ cdef class UMPAModelBase:
         cdef error_status error
         cdef double cover_threshold
 
+        # Debug vars, only set if DEBUG == True
+        cdef cnp.ndarray[double, ndim = 3] debug_d
+        cdef cnp.ndarray[double, ndim = 3] debug_a
+        cdef cnp.ndarray[int, ndim = 2] debug_Ncalls      
+
         if (ROI is not None) and (step is not None):
             print("Warning: 'ROI' and 'step' parameters are set simultaneously. "
                   "'step' parameter is ignored.")
@@ -468,10 +474,10 @@ cdef class UMPAModelBase:
         err = np.zeros(sh, dtype=np.int32)
         cvr = np.zeros(sh, dtype=NPDOUBLE)
 
-        IF DEBUG:
-            cdef cnp.ndarray[double, ndim = 3] debug_d = np.zeros(sh + (25,), dtype=NPDOUBLE)
-            cdef cnp.ndarray[double, ndim = 3] debug_a = np.zeros(sh + (16,), dtype=NPDOUBLE)
-            cdef cnp.ndarray[int, ndim = 2] debug_Ncalls = np.zeros(sh, dtype=np.int32)
+        if DEBUG:
+            debug_d = np.zeros(sh + (25,), dtype=NPDOUBLE)
+            debug_a = np.zeros(sh + (16,), dtype=NPDOUBLE)
+            debug_Ncalls = np.zeros(sh, dtype=np.int32)
 
         with nogil, parallel(num_threads=nthreads):
             db = new minimizer_debug[double]()
@@ -485,15 +491,15 @@ cdef class UMPAModelBase:
                                              &uv[xi, xj, 0],
                                              db)
                     err[xi, xj] = error.ok
-                    IF DEBUG:
+                    if DEBUG:
                         memcpy(&debug_d[xi, xj, 0], db.d, 25*sizeof(double))
                         memcpy(&debug_a[xi, xj, 0], db.a, 16*sizeof(double))
                         debug_Ncalls[xi, xj] = db.Ncalls
             del db
-        IF DEBUG:
+        if DEBUG:
             return {'values': values, 'err': err, 'debug_d': debug_d,
                     'debug_a': debug_a, 'debug_Ncalls': debug_Ncalls}
-        ELSE:
+        else:
             return {'values': values, 'err': err}
 
     def coverage(self, step=None, ROI=None):
