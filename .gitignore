@@ -129,3 +129,5 @@ dmypy.json
 .drone-local.yml
 
 build/
+dist/
+secrets.txt
