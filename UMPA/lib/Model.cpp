@@ -274,7 +274,11 @@ template <class T>
 error_status ModelBase<T>::coverage(T* out, int i, int j)
 {
     T w, wt=0.;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
     error_status s = {0};
+#pragma GCC diagnostic pop    
 
     if(this->mask.empty())
     {
@@ -366,8 +370,12 @@ error_status ModelNoDF<T>::cost(T* out, int* shift_ij, CostArgsNoDF<T>* args)
     T t3 = 0.;
     T t5 = 0.;
     T w, wt, wij, sij, rij; 
-    error_status s = {0};
     int Nw = this->Nw;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+    error_status s = {0};
+#pragma GCC diagnostic pop       
 
     if(shift_ij[0] <= -this->max_shift)
     {
@@ -648,8 +656,12 @@ error_status ModelDF<T>::cost(T* out, int* shift_ij, CostArgsDF<T>* args)
     T beta, K, wij, sij, rij;
     T w, wt; 
     T c, wt_c, denom;
-    error_status s = {0};
     int Nw = this->Nw;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+    error_status s = {0};
+#pragma GCC diagnostic pop       
 
     if(shift_ij[0] <= -this->max_shift)
     {
@@ -1005,8 +1017,12 @@ error_status ModelDFKernel<T>::cost(
     T t3 = 0.;
     T t5 = 0.;
     T w, wt, wij, sij, rij, blurred_ref;
-    error_status s = {0};
     int Nw = this->Nw;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
+    error_status s = {0};
+#pragma GCC diagnostic pop       
 
     if(shift_ij[0] <= -this->max_shift)
     {
