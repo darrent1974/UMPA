@@ -1,0 +1,112 @@
+---
+kind: pipeline
+type: kubernetes
+name: new-commit
+trigger:
+  ref:
+    - refs/heads/main
+
+steps:
+  - name: build
+    image: python:3.12-slim-bookworm
+    volumes:
+      - name: dist
+        path: ./dist
+    cache_from: docker.asci.synchrotron.org.au/${DRONE_REPO,,}:main
+    tag: main
+    mtu: 1480
+    environment:
+      VIRTUAL_ENV: /opt/venv
+      TWINE_USERNAME:
+        from_secret: pypiUsername
+      TWINE_PASSWORD:
+        from_secret: pypiPassword
+      TWINE_REPOSITORY_URL:
+        from_secret: pypiServerDev
+      TWINE_NON_INTERACTIVE: true
+    commands:
+      - echo Install build requirements
+      - apt-get update && apt-get install build-essential pkg-config ninja-build git -y
+      - echo Setup python virtual environment
+      - python -m venv $VIRTUAL_ENV
+      - export PATH="$VIRTUAL_ENV/bin:$PATH"
+      - pip install meson numpy cython pkgconfig build pytest twine
+      - git config --global safe.directory "*"
+      - echo Install ...
+      - pip install .
+      - echo Running tests...
+      - cd tests && python -m pytest .
+      - echo Build distrubution artefacts ...
+      - cd .. && python -m build
+      - echo Upload distrubution artefacts ...
+      - twine upload --verbose dist/*
+
+---
+kind: pipeline
+type: kubernetes
+name: new-release
+trigger:
+  ref:
+    - refs/tags/*
+
+steps:
+  - name: build
+    image: docker.asci.synchrotron.org.au/python:3.12-slim-bookworm
+    volumes:
+      - name: dist
+        path: ./dist
+    cache_from: docker.asci.synchrotron.org.au/${DRONE_REPO,,}:main
+    tag: main
+    mtu: 1480
+    environment:
+      VIRTUAL_ENV: /opt/venv
+      TWINE_USERNAME:
+        from_secret: pypiUsername
+      TWINE_PASSWORD:
+        from_secret: pypiPassword
+      TWINE_REPOSITORY_URL:
+        from_secret: pypiServerProd
+      TWINE_NON_INTERACTIVE: true
+    commands:
+      - echo Install build requirements
+      - apt-get update && apt-get install build-essential pkg-config ninja-build git -y
+      - echo Setup python virtual environment
+      - python -m venv $VIRTUAL_ENV
+      - export PATH="$VIRTUAL_ENV/bin:$PATH"
+      - pip install meson numpy cython pkgconfig build twine
+      - git config --global safe.directory "*"
+      - echo Build distrubution artefacts ...
+      - cd .. && python -m build
+      - echo Upload distrubution artefacts ...
+      - twine upload --verbose dist/*
+
+---
+kind: secret
+name: s3cicdKey
+get:
+  path: asci-cicd-prod
+  name: s3cicdKey
+---
+kind: secret
+name: pypiUsername
+get:
+  path: asci-cicd-prod
+  name: pypiUsername
+---
+kind: secret
+name: pypiPassword
+get:
+  path: asci-cicd-prod
+  name: pypiPassword
+---
+kind: secret
+name: pypiServer
+get:
+  path: asci-cicd-prod
+  name: pypiServer
+---
+kind: secret
+name: s3ApiServer
+get:
+  path: asci-cicd-prod
+  name: s3ApiServer
