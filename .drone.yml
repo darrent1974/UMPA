@@ -22,7 +22,7 @@ steps:
       TWINE_PASSWORD:
         from_secret: pypiPassword
       TWINE_REPOSITORY_URL:
-        from_secret: pypiServerDev
+        from_secret: pypiServer
       TWINE_NON_INTERACTIVE: true
     commands:
       - echo Install build requirements
