@@ -11,9 +11,9 @@ name = "UMPA"
 dynamic = ["version"]
 requires-python = ">= 3.12"
 dependencies = [
-  "numpy>=2.2.2",
   "cython>=3.0.0",
-  "scipy>=1.15.1",
+  "numpy",
+  "scipy",
   "matplotlib",
   "joblib",
 ]
