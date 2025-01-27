@@ -7,7 +7,7 @@ project(
         'cpp_std=c++17',
         'buildtype=release',
     ],
-    version: '3.0.0'
+    version: '3.0.1'
 )
 
 subdir('UMPA')
