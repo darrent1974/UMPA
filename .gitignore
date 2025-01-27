@@ -126,6 +126,6 @@ dmypy.json
 .vscode/
 .devcontainer/
 *.code-workspace
-.drone-local
+.drone-local.yml
 
 build/
