@@ -274,7 +274,11 @@ template <class T>
 error_status ModelBase<T>::coverage(T* out, int i, int j)
 {
     T w, wt=0.;
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wmissing-field-initializers"
     error_status s = {0};
+#pragma GCC diagnostic pop    
 
     if(this->mask.empty())
     {
