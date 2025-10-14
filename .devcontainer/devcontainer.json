@@ -1,0 +1,40 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/python
+{
+	"name": "mct-umpa",
+	"service": "mct-umpa",
+	"dockerComposeFile": [
+		"docker-compose.yml"
+	],
+	"shutdownAction": "stopCompose",
+	"workspaceFolder": "/workspace",
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"terminal.integrated.profiles.linux": {
+					"bash": {
+						"path": "/bin/bash"
+					}
+				},
+				"terminal.integrated.defaultProfile.linux": "bash",
+				"editor.formatOnSave": true,
+			},
+			"extensions": [
+				"ms-python.python",
+				"ms-python.vscode-pylance",
+				"ms-python.flake8",
+				"ms-python.black-formatter",
+				"gitkraken.gitkraken-authentication",
+				"eamodio.gitlens",
+				"atlassian.atlascode",
+				"ktnrg45.vscode-cython",
+				"mesonbuild.mesonbuild",
+			],
+		}
+	},
+	//"postCreateCommand": "python -m pip install -r .devcontainer/requirements.txt",
+	"remoteUser": "thompsod",
+	"features": {
+		"git": "os-provided"
+	}
+}

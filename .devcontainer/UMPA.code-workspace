@@ -1,0 +1,11 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		},
+		{
+			"path": "../../opt/venv/lib/python3.12/site-packages"
+		}
+	],
+	"settings": {}
+}

@@ -1,0 +1,25 @@
+services:
+  mct-umpa:
+    stdin_open: true
+    tty: true
+    build:
+      context: .
+      args:
+        BASE_IMAGE: ${BASE_IMAGE}
+        USER_NAME: ${USER_NAME}
+        USER_UID: ${USER_UID}
+        USER_GID: ${USER_GID}
+        USER_GROUP_NAME: ${USER_GROUP_NAME} 
+    volumes:
+      - ..:/workspace
+      - $HOME/.ssh:/$HOME/.ssh
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro 
+    cap_add:
+      - SYS_PTRACE
+      - CAP_SYS_ADMIN
+    security_opt:
+      - seccomp:unconfined
+    # Overrides default command so things don't shut down after the process ends.
+    command: /bin/sh -c "while sleep 1000; do :; done"
